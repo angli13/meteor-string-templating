@@ -4,3 +4,13 @@
 	width: 100%;
 	height:200px !important;
 }
+
+@import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
+
+ #editor {
+ 	overflow:scroll; 
+ 	max-height:300px;
+ }
+ .wysiwyg-editor{
+ 	height: 250px;
+ }

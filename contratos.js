@@ -42,6 +42,9 @@ if (Meteor.isClient) {
   Session.setDefault('editandoContrato', false);
   Session.setDefault('editandoPlantilla', false);
 
+  Template.editor.rendered = function () {
+    initEditor();
+  };
 
   Template.nuevaPlantilla.helpers({
     counter: function () {
@@ -64,7 +67,8 @@ if (Meteor.isClient) {
         text=newText;
         console.log(newText);
       };
-      return newText;
+      $('.texto').html(newText);
+      //return newText;
   });
 
   Template.registerHelper('isActiveRoute', function(route,root) {
@@ -83,10 +87,12 @@ if (Meteor.isClient) {
 
 
   Template.nuevaPlantilla.events({
-    'click button': function (event,template) {
+    'click .save-btn': function (event,template) {
       // increment the counter when button is clicked
-      if (template.find('.text-area').value!="" && template.find('.name-text').value!="") {
-      var myString = template.find('.text-area').value;
+      var text = $('.wysiwyg-editor').html();
+      if ($('.wysiwyg-editor').html().length>=6 && template.find('.name-text').value!="") {
+      //var myString = template.find('.text-area').value;
+      myString=text;
       var myName = template.find('.name-text').value;
       var myRegexp = /[%]{2}\w+[%]{2}/g;
       var match = myString.match(myRegexp);
@@ -96,7 +102,6 @@ if (Meteor.isClient) {
         Plantillas.update({_id:contratoId},{$addToSet:{placeholders:{placeholder:match[i],name:match[i].match(wordReg)[0]}}});
       };
       Session.set('counter', Session.get('counter') + 1);
-      template.find('.text-area').value="";
       Router.go('plantillas');
     }else{
       alert('Completa los campos.');
@@ -210,3 +215,4 @@ if (Meteor.isServer) {
   
   });
 }
+

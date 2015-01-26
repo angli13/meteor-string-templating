@@ -1,12 +1,15 @@
 <template name="baseLayout">
 <head>
-	<title>Contratos</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+	<title>Contratero</title>
 </head>
 <body>
 	<div class="navbar navbar-default" role="navigation">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#">Contratero</a>
-
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
@@ -18,15 +21,15 @@
 		<div class="row">
 			<div class="col-sm-2">
 				<ul class="nav nav-pills nav-stacked">
-					<li role="presentation" class="{{ isActiveRoute 'contratos' '/' }}"><a href="/">Contratos</a></li>
-					<li role="presentation"  class="{{ isActiveRoute 'plantillas' }}"><a href="{{pathFor 'plantillas'}}">Plantillas</a></li>
-					<li role="presentation" class="{{ isActiveRoute 'contratos.nuevo' }}"><a href="{{pathFor 'contratos.nuevo'}}">Nuevo Contrato</a></li>
-					<li role="presentation" class="{{ isActiveRoute 'plantillas.nueva' }}"><a href="{{pathFor 'plantillas.nueva'}}">Nueva Plantilla</a></li>
+					<li role="presentation" class="{{ isActiveRoute 'contratos' '/' }}"><a href="/">Documents</a></li>
+					<li role="presentation"  class="{{ isActiveRoute 'plantillas' }}"><a href="{{pathFor 'plantillas'}}">Templates</a></li>
+<!-- 					<li role="presentation" class="{{ isActiveRoute 'contratos.nuevo' }}"><a href="{{pathFor 'contratos.nuevo'}}">New Document</a></li> -->
+					<li role="presentation" class="{{ isActiveRoute 'plantillas.nueva' }}"><a href="{{pathFor 'plantillas.nueva'}}">New Template</a></li>
 				</ul>
 			</div>
 			<div class="col-sm-9">
 				{{#if currentUser}}
-					{{> yield}}
+				{{> yield}}
 				{{/if}}
 			</div>
 		</div>
@@ -38,14 +41,15 @@
 <template name="nuevaPlantilla">
 <div class="panel panel-default">
 	<div class="panel-body">
-		Nombre de la plantilla:  <input id="name-text" type="text" class="form-control name-text input-large" placeholder="Nombre de la plantilla">
+		Template name:  <input id="name-text" type="text" class="form-control name-text input-large" placeholder="Nombre de la plantilla">
 		<br>
 		<!-- <button class="btn btn-info close-btn">Cerrar</button> -->
-		
-		<textarea id="text_area" class=" form-control text-area" placeholder="Texto"></textarea>
+		{{>editor}}
 		<br><br><br>
-		<button class="btn btn-primary btn-lg pull-right">Guardar</button>
+		<button class="btn btn-primary btn-lg pull-right save-btn">Save</button>
+		
 	</div>
+		
 </div>
 </template>
 <!--  -------------------------------------------------Nuevo Contrato -------------------------------------------------------- -->
@@ -56,12 +60,11 @@
 </div>
 <form class="form contrato-nuevo-forma" id="contrato-nuevo-forma">
 	<div class="row">
-		<input type="submit" class="submit-contrato-nuevo btn btn-primary pul-right" value="Guardar">
-		<button class="btn btn-info close-btn">Cerrar</button>
+		
 		<br><br>
-		<span>Nombre del Contrato</span><br>
+		<span>Document name</span><br>
 		<input type="text" required class='form-control' id='nombre-contrato' value="{{contrato.name}}"><br>
-		<span>Cliente del Contrato</span><br>
+		<span>Document description</span><br>
 		<input type="text" required class='form-control' id='cliente-contrato' value="{{contrato.client}}"><br>
 	</div>
 	<div class="row">
@@ -71,20 +74,19 @@
 			<input type="text" required class='form-control {{placeholder}}' id='{{placeholder}}' placeholder='{{placeholder}}' value="{{value}}"><br><br>
 		</div>
 		{{/each}}
+		<input type="submit" class="submit-contrato-nuevo btn btn-primary pul-right" value="Save">
+		<button class="btn btn-info close-btn">Close</button>
 	</div>
 </form>
 {{else}}
 <div class="page-header">
-	<h1>Nuevo contrato <small>de {{plantilla.name}}</small></h1>
+	<h1>New document <small>de {{plantilla.name}}</small></h1>
 </div>
 <form class="form contrato-nuevo-forma" id="contrato-nuevo-forma">
-	<div class="row">
-		<input type="submit" class="submit-contrato-nuevo btn btn-primary pul-right" value="Crear">
-		<button class="btn btn-info close-btn">Cerrar</button>
-		<br><br>
-		<span>Nombre del Contrato</span><br>
+	<div class="row">	
+		<span>Document name</span><br>
 		<input type="text" required class='form-control' id='nombre-contrato'><br>
-		<span>Cliente del Contrato</span><br>
+		<span>Document description</span><br>
 		<input type="text" required class='form-control' id='cliente-contrato'><br>
 	</div>
 	<div class="row">
@@ -95,20 +97,24 @@
 		</div>
 		{{/each}}
 	</div>
+	<div class="row">
+		<input type="submit" class="submit-contrato-nuevo btn btn-primary pul-right" value="Create">
+		<button class="btn btn-info close-btn">Close</button>
+	</div>	
 </form>
 {{/if}}
 </template>
 <!--  -------------------------------------------------------Contratos -------------------------------------------------------------- -->
 <template name="contratosTemplate">
 <div class="page-header">
-	<h1>Contratos <small>Lista de contratos.</small></h1>
+	<h1>Documents <small>Documents catalog.</small></h1>
 </div>
 <table class="table">
 	<thead>
-		<th>Nombre</th>
-		<th>Cliente</th>
-		<th>Fecha</th>
-		<th>Acciones</th>
+		<th>Name</th>
+		<th>Desc</th>
+		<th>Date</th>
+		<th>Actions</th>
 	</thead>
 	<tbody>
 		{{#each contratos}}
@@ -119,7 +125,7 @@
 			<td>
 				<a class="btn btn-success new-btn glyphicon glyphicon-plus"></a>
 				<a class="btn btn-info see-btn glyphicon glyphicon-eye-open"></a>
-				<button class=" btn btn-danger del-btn glyphicon glyphicon-remove pull-right"></button>
+				<button class=" btn btn-danger del-btn glyphicon glyphicon-remove"></button>
 			</td>
 		</tr>
 		{{/each}}
@@ -128,21 +134,21 @@
 <div class="well">
 	<div class="page-header">
 		<h1>{{contrato.name}}</h1>
-		{{formatTemplate contrato}}
+		<div class="texto">{{formatTemplate contrato}}</div>
 	</div>
 </div>
 </template>
 <!--  -----------------------------------------------------Plantillas ------------------------------------------------------------ -->
 <template name="plantillasTemplate">
 <div class="page-header">
-	<h1>Plantillas <small>Lista de plantillas.</small></h1>
+	<h1>Templates <small>Templates catalog.</small></h1>
 </div>
 <table class="table">
 	<thead>
-		<th>Nombre</th>
+		<th>Name</th>
 		<th>Variables</th>
-		<th>Fecha</th>
-		<th>Acciones</th>
+		<th>Date</th>
+		<th>Actions</th>
 	</thead>
 	<tbody>
 		{{#each plantillas}}
@@ -152,13 +158,16 @@
 			<td>{{formatDate date}}</td>
 			<td>
 				<a class="btn btn-success new-btn glyphicon glyphicon-plus"></a>
-				<button class=" btn btn-danger del-btn glyphicon glyphicon-remove pull-right"></button>
+				<button class=" btn btn-danger del-btn glyphicon glyphicon-remove"></button>
 			</td>
 		</tr>
 		{{/each}}
 	</tbody>
 </table>
 </template>
-<template name="_loginButtonsAdditionalLoggedInDropdownActions">
-<button class="btn btn-default btn-block" id="login-buttons-edit-profile">Editar</button>
+<template name="editor">
+<div style="width:100%; margin: 30px auto;">
+<div id="editor1" name="editor" placeholder="Type your text here...">
+</div>
+</div>
 </template>
