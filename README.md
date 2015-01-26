@@ -1,6 +1,6 @@
 # Contratero
 
-Contratero is a simple app created with [Meteor], [Bootstrap and [Wysiwyg.js]
+Contratero is a simple app created with [Meteor], [Bootstrap] and [Wysiwyg.js]
 [Meteor]:http://www.meteor.com
 [Wysiwyg.js]:https://github.com/wysiwygjs/wysiwyg.js
 [Bootstrap]:http://getbootstrap.com
